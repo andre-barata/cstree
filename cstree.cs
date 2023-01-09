@@ -22,6 +22,7 @@ public class Tree
 
             Branch newBranch = new Branch();
             newBranch.level = pos;
+            newBranch.footprint = val;
             if ((val | (1 << pos)) != 0)
             {
                 newBranch.LeftNode = new Leaf() { value = val };
@@ -68,6 +69,7 @@ public class Branch : Node {
     public Node LeftNode;
     public Node RightNode;
     public int level;
+    public int footprint;
 }
 public class Leaf : Node {
     public int value;
