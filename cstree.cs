@@ -14,7 +14,6 @@ public class Tree
 
             int xor = lastVal ^ val;
             int pos = 0;
-
             while ((xor >>= 1)!=0) // unroll for more speed...
             {
                 pos++;
@@ -38,9 +37,19 @@ public class Tree
         {
             Branch curBranch = root as Branch;
 
-            //while (curBranch is Branch)
+            while (curBranch is Branch)
             {
-                //if () curBranch.level;
+                int xor = curBranch.footprint ^ val;
+                int pos = 0;
+                while ((xor >>= 1)!=0) // unroll for more speed...
+                {
+                    pos++;
+                }
+                if (pos > curBranch.level) /* add branch above*/;
+                else { // navigate to child 
+                    if(((val | (1 << pos)) != 0)) curBranch = curBranch.LeftNode;
+                    else curBranch = curBranch.RightNode;
+                }
 
             }
 
