@@ -39,13 +39,13 @@ public class Tree
 
             while (curBranch is Branch)
             {
-                int xor = curBranch.footprint ^ val;
+                int xor = (curBranch as Branch).footprint ^ val;
                 int pos = 0;
                 while ((xor >>= 1)!=0) // unroll for more speed...
                 {
                     pos++;
                 }
-                if (pos > curBranch.level) {/* add branch*/
+                if (pos > (curBranch as Branch).level) {/* add branch*/
                     Branch newBranch = new Branch();
                     newBranch.level = pos;
                     newBranch.footprint = val;
@@ -61,13 +61,11 @@ public class Tree
                     return;
                 }
                 else { // navigate to child 
-                    if(((val | (1 << pos)) != 0)) curBranch = curBranch.RightNode as Branch;
-                    else curBranch = curBranch.LeftNode as Branch;
+                    if(((val | (1 << pos)) != 0)) curBranch = (curBranch as Branch).RightNode as Branch;
+                    else curBranch = (curBranch as Branch).LeftNode as Branch;
                 }
 
             }
-
-
         }
     }
 
@@ -77,7 +75,6 @@ public class Tree
     }
     public void PrintNode(Node node, string	linePrepend) 
     {
-        Console.WriteLine(node is Leaf);
         if (node is Leaf)
             Console.WriteLine("{0}[{1}]", linePrepend, node.ToString());
         else if (node is Branch) {
@@ -121,8 +118,6 @@ public class Program
         Console.WriteLine("-> adding "+Utils.toBin(0b01010000));
         tree.AddNode(0b01010000);
         tree.Print();
-
-        Console.ReadLine();
     }
 }
 
