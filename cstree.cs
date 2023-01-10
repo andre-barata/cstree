@@ -24,11 +24,11 @@ public class Tree
             newBranch.footprint = val;
             if ((val | (1 << pos)) != 0)
             {
-                newBranch.LeftNode = new Leaf() { value = val };
-                newBranch.RightNode = root;
-            } else {
                 newBranch.LeftNode = root;
                 newBranch.RightNode = new Leaf() { value = val };
+            } else {
+                newBranch.LeftNode = new Leaf() { value = val };
+                newBranch.RightNode = root;
             }
             root = newBranch;
         }
@@ -45,10 +45,24 @@ public class Tree
                 {
                     pos++;
                 }
-                if (pos > curBranch.level) /* add branch above*/;
+                if (pos > curBranch.level) {/* add branch*/
+                    Branch newBranch = new Branch();
+                    newBranch.level = pos;
+                    newBranch.footprint = val;
+                    if ((val | (1 << pos)) != 0)
+                    {
+                        newBranch.LeftNode = curBranch;
+                        newBranch.RightNode = new Leaf() { value = val };
+                    } else {
+                        newBranch.LeftNode = new Leaf() { value = val };
+                        newBranch.RightNode = curBranch;
+                    }
+                    curBranch = newBranch;
+                    return;
+                }
                 else { // navigate to child 
-                    if(((val | (1 << pos)) != 0)) curBranch = curBranch.LeftNode;
-                    else curBranch = curBranch.RightNode;
+                    if(((val | (1 << pos)) != 0)) curBranch = curBranch.RightNode as Branch;
+                    else curBranch = curBranch.LeftNode as Branch;
                 }
 
             }
@@ -63,6 +77,7 @@ public class Tree
     }
     public void PrintNode(Node node, string	linePrepend) 
     {
+        Console.WriteLine(node is Leaf);
         if (node is Leaf)
             Console.WriteLine("{0}[{1}]", linePrepend, node.ToString());
         else if (node is Branch) {
@@ -95,11 +110,18 @@ public class Program
     {
         Tree tree = new Tree();
 
-        tree.AddNode(123);
-        tree.AddNode(23);
-        tree.AddNode(200);
-
+        Console.WriteLine("-> adding "+Utils.toBin(0b00000100));
+        tree.AddNode(0b00000100);
         tree.Print();
+
+        Console.WriteLine("-> adding "+Utils.toBin(0b00010100));
+        tree.AddNode(0b00010100);
+        tree.Print();
+
+        Console.WriteLine("-> adding "+Utils.toBin(0b01010000));
+        tree.AddNode(0b01010000);
+        tree.Print();
+
         Console.ReadLine();
     }
 }
