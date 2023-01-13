@@ -34,11 +34,12 @@ public class Tree
                 newBranch.RightNode = root.p;
             }
             root.p = newBranch;
+            return;
         }
 
         if (root.p is Branch)
         {
-            RefNode curBranch = root as RefNode;
+            RefNode curBranch = root;
 
             while (curBranch.p is Branch)
             {
