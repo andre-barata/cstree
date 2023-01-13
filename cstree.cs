@@ -3,14 +3,17 @@ using System.Text;
 
 public class Tree
 {
-    private Node root = null;
+    public class RefNode { public Node p; }
+
+    private RefNode root = new RefNode();
+
     public void AddNode(int val)
     {
-        if (root == null) { root = new Leaf() { value = val }; return; }
+        if (root.p == null) { root.p = new Leaf() { value = val }; return; }
 
-        if (root is Leaf)
+        if (root.p is Leaf)
         {
-            var lastVal = (root as Leaf).value;
+            var lastVal = (root.p as Leaf).value;
 
             int xor = lastVal ^ val;
             int pos = 0;
@@ -24,45 +27,45 @@ public class Tree
             newBranch.footprint = val;
             if ((val | (1 << pos)) != 0)
             {
-                newBranch.LeftNode = root;
+                newBranch.LeftNode = root.p;
                 newBranch.RightNode = new Leaf() { value = val };
             } else {
                 newBranch.LeftNode = new Leaf() { value = val };
-                newBranch.RightNode = root;
+                newBranch.RightNode = root.p;
             }
-            root = newBranch;
+            root.p = newBranch;
         }
 
-        if (root is Branch)
+        if (root.p is Branch)
         {
-            Branch curBranch = root as Branch;
+            RefNode curBranch = root as RefNode;
 
-            while (curBranch is Branch)
+            while (curBranch.p is Branch)
             {
-                int xor = (curBranch as Branch).footprint ^ val;
+                int xor = (curBranch.p as Branch).footprint ^ val;
                 int pos = 0;
                 while ((xor >>= 1)!=0) // unroll for more speed...
                 {
                     pos++;
                 }
-                if (pos > (curBranch as Branch).level) {/* add branch*/
+                if (pos > (curBranch.p as Branch).level) {/* add branch*/
                     Branch newBranch = new Branch();
                     newBranch.level = pos;
                     newBranch.footprint = val;
                     if ((val | (1 << pos)) != 0)
                     {
-                        newBranch.LeftNode = curBranch;
+                        newBranch.LeftNode = curBranch.p;
                         newBranch.RightNode = new Leaf() { value = val };
                     } else {
                         newBranch.LeftNode = new Leaf() { value = val };
-                        newBranch.RightNode = curBranch;
+                        newBranch.RightNode = curBranch.p;
                     }
-                    curBranch = newBranch;
+                    curBranch.p = newBranch;
                     return;
                 }
                 else { // navigate to child 
-                    if(((val | (1 << pos)) != 0)) curBranch = (curBranch as Branch).RightNode as Branch;
-                    else curBranch = (curBranch as Branch).LeftNode as Branch;
+                    if(((val | (1 << pos)) != 0)) curBranch.p = (curBranch.p as Branch).RightNode as Branch;
+                    else curBranch.p = (curBranch.p as Branch).LeftNode as Branch;
                 }
 
             }
@@ -71,7 +74,7 @@ public class Tree
 
     public void Print() 
     {
-        PrintNode(root, "");
+        PrintNode(root.p, "");
     }
     public void PrintNode(Node node, string	linePrepend) 
     {
@@ -98,8 +101,6 @@ public class Leaf : Node {
         return Utils.toBin(value);
     }
 }
-
-
 
 public class Program
 {
