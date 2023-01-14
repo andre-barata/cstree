@@ -3,17 +3,15 @@ using System.Text;
 
 public class Tree
 {
-    public class RefNode { public Node p; }
-
-    private RefNode root = new RefNode();
+    private Node root = null;
 
     public void AddNode(int val)
     {
-        if (root.p == null) { root.p = new Leaf() { value = val }; return; }
+        if (root == null) { root = new Leaf() { value = val }; return; }
 
-        if (root.p is Leaf)
+        if (root is Leaf)
         {
-            var lastVal = (root.p as Leaf).value;
+            var lastVal = (root as Leaf).value;
 
             int xor = lastVal ^ val;
             int pos = 0;
@@ -27,47 +25,47 @@ public class Tree
             newBranch.footprint = val;
             if ((val | (1 << pos)) != 0)
             {
-                newBranch.LeftNode = root.p;
+                newBranch.LeftNode = root;
                 newBranch.RightNode = new Leaf() { value = val };
             } else {
                 newBranch.LeftNode = new Leaf() { value = val };
-                newBranch.RightNode = root.p;
+                newBranch.RightNode = root;
             }
-            root.p = newBranch;
+            root = newBranch;
             return;
         }
 
-        if (root.p is Branch)
+        if (root is Branch)
         {
-            RefNode curBranch = root;
+            ref Node curBranch = ref root;
 
-            while (curBranch.p is Branch)
+            while (curBranch is Branch)
             {
-                int xor = (curBranch.p as Branch).footprint ^ val;
+                int xor = (curBranch as Branch).footprint ^ val;
                 int pos = 0;
                 while ((xor >>= 1)!=0) // unroll for more speed...
                 {
                     pos++;
                 }
-                if (pos > (curBranch.p as Branch).level) {/* add branch*/
+                if (pos > (curBranch as Branch).level) {/* add branch*/
                     Branch newBranch = new Branch();
                     newBranch.level = pos;
                     newBranch.footprint = val;
                     if ((val | (1 << pos)) != 0)
                     {
-                        newBranch.LeftNode = curBranch.p;
+                        newBranch.LeftNode = curBranch;
                         newBranch.RightNode = new Leaf() { value = val };
                     } else {
                         newBranch.LeftNode = new Leaf() { value = val };
-                        newBranch.RightNode = curBranch.p;
+                        newBranch.RightNode = curBranch;
                     }
-                    curBranch.p = newBranch;
+                    curBranch = newBranch as Node;
                     return;
                 }
                 else { // navigate to child 
-                    Console.WriteLine("branch {0}", Utils.toBin((curBranch.p as Branch).footprint));
-                    if(((val | (1 << (curBranch.p as Branch).level)) != 0)) curBranch.p = (curBranch.p as Branch).RightNode as Branch;
-                    else curBranch.p = (curBranch.p as Branch).LeftNode as Branch;
+                    Console.WriteLine("branch {0}", Utils.toBin((curBranch as Branch).footprint));
+                    if(((val | (1 << (curBranch as Branch).level)) != 0)) curBranch = (curBranch as Branch).RightNode as Branch;
+                    else curBranch = (curBranch as Branch).LeftNode as Branch;
                 }
 
             }
@@ -76,7 +74,7 @@ public class Tree
 
     public void Print() 
     {
-        PrintNode(root.p, "");
+        PrintNode(root, "");
     }
     public void PrintNode(Node node, string	linePrepend) 
     {
@@ -110,24 +108,20 @@ public class Program
     {
         Tree tree = new Tree();
 
-        Console.WriteLine("-> adding "+Utils.toBin(0b00000100));
-        tree.AddNode(0b00000100);
+        Console.WriteLine("-> adding "+Utils.toBin(0b00000000));
+        tree.AddNode(0b00000000);
         tree.Print();
 
-        Console.WriteLine("-> adding "+Utils.toBin(0b00010100));
-        tree.AddNode(0b00010100);
+        Console.WriteLine("-> adding "+Utils.toBin(0b01000000));
+        tree.AddNode(0b01000000);
         tree.Print();
 
-        Console.WriteLine("-> adding "+Utils.toBin(0b01010000));
-        tree.AddNode(0b01010000);
+        Console.WriteLine("-> adding "+Utils.toBin(0b10000010));
+        tree.AddNode(0b10000010);
         tree.Print();
 
-        Console.WriteLine("-> adding "+Utils.toBin(0b01110100));
-        tree.AddNode(0b11010100);
-        tree.Print();
-
-        Console.WriteLine("-> adding "+Utils.toBin(0b01010100));
-        tree.AddNode(0b01010100);
+        Console.WriteLine("-> adding "+Utils.toBin(0b11000010));
+        tree.AddNode(0b11000010);
         tree.Print();
     }
 }
