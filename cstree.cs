@@ -64,8 +64,10 @@ public class Tree
                 }
                 else { // navigate to child 
                     Console.WriteLine("branch {0}", Utils.toBin((curBranch as Branch).footprint));
-                    if(((val | (1 << (curBranch as Branch).level)) != 0)) curBranch = (curBranch as Branch).RightNode as Branch;
-                    else curBranch = (curBranch as Branch).LeftNode as Branch;
+                    if(((val | (1 << (curBranch as Branch).level)) != 0)) 
+                        curBranch = (curBranch as Branch).RightNode as Branch;
+                    else 
+                        curBranch = (curBranch as Branch).LeftNode as Branch;
                 }
 
             }
@@ -120,8 +122,8 @@ public class Program
         tree.AddNode(0b10000010);
         tree.Print();
 
-        Console.WriteLine("-> adding "+Utils.toBin(0b11000010));
-        tree.AddNode(0b11000010);
+        Console.WriteLine("-> adding "+Utils.toBin(0b01000010));
+        tree.AddNode(0b01000010);
         tree.Print();
     }
 }
