@@ -59,7 +59,7 @@ public class Tree
                         newBranch.LeftNode = new Leaf() { value = val };
                         newBranch.RightNode = curBranch;
                     }
-                    curBranch = newBranch as Node;
+                    curBranch = newBranch;
                     return;
                 }
                 else { // navigate to child 
