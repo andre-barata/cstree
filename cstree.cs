@@ -122,8 +122,8 @@ public class Program
         tree.AddNode(0b10000010);
         tree.Print();
 
-        Console.WriteLine("-> adding "+Utils.toBin(0b01000010));
-        tree.AddNode(0b01000010);
+        Console.WriteLine("-> adding "+Utils.toBin(0b10000100));
+        tree.AddNode(0b10000100);
         tree.Print();
     }
 }
